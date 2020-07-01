@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "SimonsVoss.LicenseSignatureServer";
+
+package signature;
+
+service LicenseSignature {
+  // Sends a greeting
+  rpc Validate (SignatureRequest) returns (SignatureReply);
+}
+
+message SignatureRequest {
+  string licenseKey = 1;
+}
+
+message SignatureReply {
+  string message = 1;
+  bool isSigned = 2;
+  string authority = 3;
+}

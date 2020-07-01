@@ -5,6 +5,12 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using PortalApi.Config;
+using SimonsVoss.LicenseSignatureServer;
+using SimonsVoss.Services;
+using SimonsVoss.Services.Interfaces;
+using System;
 
 namespace PortalApi
 {
@@ -21,11 +27,24 @@ namespace PortalApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.Configure<LicenseSignatureSettings>(Configuration.GetSection("LicenseSignatureSettings"));
+                      
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            AppContext.SetSwitch(
+                "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+            services.AddGrpcClient<LicenseSignature.LicenseSignatureClient>((provider, options) =>
+            {
+                var settings = provider.GetRequiredService<IOptionsMonitor<LicenseSignatureSettings>>();
+                options.Address = new Uri(settings.CurrentValue.Address);
+            });
+
+            services.AddScoped<IRegistrationService, RegistrationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +69,8 @@ namespace PortalApi
             }
 
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
