@@ -22,7 +22,7 @@ namespace SimonsVoss.LicenseSignatureServer
         {
             return Task.FromResult(new SignatureReply()
             {
-                Message = new Guid().ToString(),
+                Message = Guid.NewGuid().ToString(),
                 IsSigned = true,
                 Authority = Authority
             });

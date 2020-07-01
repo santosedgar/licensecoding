@@ -1,0 +1,61 @@
+<div class="container">
+    <div>
+        <h1>Register Software</h1>
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+            {{diagnostic}}
+            <div class="form-group">
+                <label for="companyName">Company name</label>
+                <input type="text" class="form-control" id="companyName" required [(ngModel)]="model.companyName"
+                    name="companyName" #companyName="ngModel">
+                <div [hidden]="companyName.valid || companyName.pristine" class="alert alert-danger">
+                    Company name is required
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="contactPerson">Contact Person</label>
+                <input type="text" class="form-control" id="contactPerson" required [(ngModel)]="model.contactPerson"
+                    name="contactPerson" #contactPerson="ngModel">
+                <div [hidden]="contactPerson.valid || contactPerson.pristine" class="alert alert-danger">
+                    Contact person is required
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" required pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                    id="email" required [(ngModel)]="model.email" name="email" #email="ngModel">
+                <div [hidden]="email.valid || email.pristine" class="alert alert-danger">
+                    Email is invalid
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" required [(ngModel)]="model.address" name="address"
+                    #address="ngModel">
+                <div [hidden]="address.valid || address.pristine" class="alert alert-danger">
+                    Address required
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="licenseKey">License key</label>
+                <input type="text" class="form-control" id="licenseKey" required [(ngModel)]="model.licenseKey"
+                    name="licenseKey" #licenseKey="ngModel">
+                <div [hidden]="licenseKey.valid || licenseKey.pristine" class="alert alert-danger">
+                    License key required
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success" [disabled]="!registerForm.form.valid">Submit</button>
+
+            <!-- NOT SHOWN IN DOCS -->
+            <div>
+                <hr>
+
+            </div>
+            <!-- - -->
+        </form>
+    </div>
+</div>
