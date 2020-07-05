@@ -2,7 +2,6 @@
     <div>
         <h1>Register Software</h1>
         <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-            {{diagnostic}}
             <div class="form-group">
                 <label for="companyName">Company name</label>
                 <input type="text" class="form-control" id="companyName" required [(ngModel)]="model.companyName"
@@ -48,7 +47,8 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-success" [disabled]="!registerForm.form.valid">Submit</button>
+            <button type="submit" class="btn btn-success"
+                [disabled]="!registerForm.form.valid || submitted">Submit</button>
 
             <!-- NOT SHOWN IN DOCS -->
             <div>

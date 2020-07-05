@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-registration',
@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class RegistrationComponent {
 
-    submitted = false;
+    submitted: boolean = false;
 
     model = new RegistrationRequest("e", "e", "e", "e", "s");
 
@@ -18,26 +18,42 @@ export class RegistrationComponent {
         this.http = http;
         this.baseUrl = baseUrl;
         this.model = new RegistrationRequest("", "", "", "", "");
-        /*
-            http.post<RegistrationRequest>(baseUrl + 'registration',)
-            http.get<WeatherForecast[]>(baseUrl + 'weatherforecast').subscribe(result => {
-              this.forecasts = result;
-            }, error => console.error(error));*/
     }
 
     onSubmit() {
-        this.http.post(this.baseUrl + 'registration', this.model, { responseType: 'json' })
+        this.submitted = true;
+        this.http.post(this.baseUrl + 'registration', this.model, { responseType: 'json', observe: 'response' })
             .subscribe(res => {
                 console.log(res);
                 this.submitted = false;
+                this.processResult(res);
             },
                 err => {
                     console.log(err);
+                    this.processResult(err);
                     this.submitted = false;
                 });
     }
 
-    // TODO: Remove this when we're done
+    processResult(response: HttpResponse<Object>) {
+        try {
+            switch (response.status) {
+                case 202:
+                    let jsonBody = JSON.parse(JSON.stringify(response.body));
+                    alert(`Application registed. Application signature is ${jsonBody.message}`);
+                    this.model = new RegistrationRequest("", "", "", "", "");
+                    break;
+                default:
+                    alert("There was an error trying to register your application");
+                    break;
+            }
+        }
+        catch (ex) {
+            alert("There was an error trying to register your application");
+        }
+        this.submitted = false;
+    }
+
     get diagnostic() { return JSON.stringify(this.model); }
 
 }
