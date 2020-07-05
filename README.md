@@ -36,5 +36,5 @@ docker push [YOUR_ENDPOINT].dkr.ecr.eu-central-1.amazonaws.com/licenseservice:la
 
 ### AWS diagram
 
-![Diagram](/Arquitecture.PNG)
+![Diagram](/src/Arquitecture.PNG)
 
