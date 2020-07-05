@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using SimonsVoss.Models;
+using SimonsVoss.Shared;
 
 namespace SimonsVoss.Services
 {
@@ -19,9 +20,6 @@ namespace SimonsVoss.Services
 
         public async Task<RegistrationResult> Register(RegistrationRequest request)
         {
-            // This switch must be set before creating the GrpcChannel/HttpClient.
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
             var response = _licenseSignatureClient.ValidateAsync(new SignatureRequest()
             {
                 LicenseKey = request.LicenseKey

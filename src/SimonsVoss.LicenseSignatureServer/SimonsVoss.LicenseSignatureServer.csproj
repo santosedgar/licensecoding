@@ -5,14 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\signature.proto" GrpcServices="Both" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
     <PackageReference Include="prometheus-net" Version="3.6.0" />
     <PackageReference Include="prometheus-net.AspNetCore" Version="3.6.0" />
     <PackageReference Include="prometheus-net.AspNetCore.Grpc" Version="3.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Protos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SimonsVoss.Shared\SimonsVoss.Shared.csproj" />
   </ItemGroup>
 
 </Project>

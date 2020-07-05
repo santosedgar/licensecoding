@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,9 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PortalApi.Config;
+using PortalApi.Filters;
 using SimonsVoss.LicenseSignatureServer;
+using SimonsVoss.Models;
 using SimonsVoss.Services;
 using SimonsVoss.Services.Interfaces;
+using SimonsVoss.Services.Validators;
+using SimonsVoss.Shared;
 using System;
 
 namespace PortalApi
@@ -26,8 +32,16 @@ namespace PortalApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services
+                .AddControllersWithViews(opts =>
+                {
+                    opts.Filters.Add(typeof(ValidatorActionFilter));
+                })
+                .AddFluentValidation();
+
             services.Configure<LicenseSignatureSettings>(Configuration.GetSection("LicenseSignatureSettings"));
+
+            services.AddTransient<IValidator<RegistrationRequest>, RegistrationValidator>();
                       
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -35,8 +49,8 @@ namespace PortalApi
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            AppContext.SetSwitch(
-                "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            //AppContext.SetSwitch(
+              //  "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
             services.AddGrpcClient<LicenseSignature.LicenseSignatureClient>((provider, options) =>
             {

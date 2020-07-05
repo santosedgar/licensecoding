@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "SimonsVoss.LicenseSignatureServer";
+option csharp_namespace = "SimonsVoss.Shared";
 
 package signature;
 
