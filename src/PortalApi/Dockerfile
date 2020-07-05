@@ -1,0 +1,32 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY ["PortalApi/PortalApi.csproj", "PortalApi/"]
+COPY ["SimonsVoss.LicenseSignatureServer/SimonsVoss.LicenseSignatureServer.csproj", "SimonsVoss.LicenseSignatureServer/"]
+COPY ["SimonsVoss.Shared/SimonsVoss.Shared.csproj", "SimonsVoss.Shared/"]
+COPY ["SimonsVoss.Services/SimonsVoss.Services.csproj", "SimonsVoss.Services/"]
+COPY ["SimonsVoss.Models/SimonsVoss.Models.csproj", "SimonsVoss.Models/"]
+RUN dotnet restore "PortalApi/PortalApi.csproj"
+COPY . .
+WORKDIR "/src/PortalApi"
+RUN dotnet build "PortalApi.csproj" -c Release -o /app/build
+
+RUN apt-get update && \
+    apt-get install -y wget && \
+    apt-get install -y gnupg2 && \
+    wget -qO- https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get install -y build-essential nodejs
+
+FROM build AS publish
+RUN dotnet publish "PortalApi.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "PortalApi.dll"]

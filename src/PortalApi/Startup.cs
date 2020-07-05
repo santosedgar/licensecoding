@@ -49,8 +49,8 @@ namespace PortalApi
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            //AppContext.SetSwitch(
-              //  "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            AppContext.SetSwitch(
+              "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
             services.AddGrpcClient<LicenseSignature.LicenseSignatureClient>((provider, options) =>
             {

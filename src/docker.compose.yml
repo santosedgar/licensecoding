@@ -1,0 +1,22 @@
+version: "3.4"
+
+services:
+  portalapi:
+    container_name: portalapi
+    image: ${DOCKER_REGISTRY-}portalapi
+    environment:
+      LicenseSignatureSettings__Address: host.docker.internal:9111 ##http://licence.simonsvoss.com
+    build:
+      context: .
+      dockerfile: PortalApi/Dockerfile
+    ports:
+      - 5001:80
+
+  licenseservice:
+    container_name: licenseservice
+    image: ${DOCKER_REGISTRY-}licenseservice
+    build:
+      context: .
+      dockerfile: SimonsVoss.LicenseSignatureServer/Dockerfile
+    ports:
+      - 9111:80
