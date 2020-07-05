@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SimonsVoss.Models;
 using SimonsVoss.Shared;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace SimonsVoss.Services
 {
@@ -31,9 +32,20 @@ namespace SimonsVoss.Services
             return new RegistrationResult()
             {
                 Authority = getResponse.Authority,
-                Message = getResponse.Message,
+                Message = GenerateKey(request.LicenseKey),
                 Valid = getResponse.IsSigned
             };
+        }
+
+        public string GenerateKey(string clientKey)
+        {
+            // Dummy method to generate a key
+            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: clientKey,
+                salt: new byte[0],
+                prf: KeyDerivationPrf.HMACSHA1,
+                iterationCount: 1,
+                numBytesRequested: 256 / 8));
         }
     }
 }
